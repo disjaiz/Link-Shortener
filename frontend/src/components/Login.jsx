@@ -81,10 +81,13 @@ function Login() {
   
       try{
         const response = await login(loginData);
-        const data = await response.json();
+        // const data = await response.json();
+
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : {}; 
+        console.log(data) ;  
         
         if (response.status === 200) {
-          console.log(data.existingUser.name);
           console.log('logged in successfully');
           navigate('/dashboardlander', { state: { username: data.existingUser.name} });
         }                                       
@@ -102,7 +105,7 @@ function Login() {
         console.log('Network error. Please check your connection and try again.');
       }
     };
-    
+
 // ===========================================================================================================================================
   return (
     <div className={style.container}>
