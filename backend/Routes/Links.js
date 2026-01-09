@@ -6,8 +6,7 @@ import  Authenticate  from '../Middleware/Authenticate.js'; // Middleware for au
 import {nanoid} from 'nanoid';
 
 // Project's backend base URL (update this when deployed)
-const BASE_URL = "http:localhost:3000/";
-
+const BASE_BACKEND_URL = process.env.BASE_BACKEND_URL;
 
 router.post('/create-link', Authenticate, async (req, res) => {
 
@@ -27,7 +26,7 @@ router.post('/create-link', Authenticate, async (req, res) => {
         console.log("hash- " , hash)
 
 
-        const shortUrl = `${BASE_URL}${hash}`; // Create shortened URL
+        const shortUrl = `${BASE_BACKEND_URL}${hash}`; // Create shortened URL
         const currentDate = new Date();
         const expirationDate = expiration ? new Date(expiration) : null;
 
@@ -60,7 +59,6 @@ router.post('/create-link', Authenticate, async (req, res) => {
         res.status(500).json({ msg: 'Internal server error.' });
     }
 });
-
 
 // Route to get all links for authenticated user
 router.get('/all-links', Authenticate, async (req, res) => {
@@ -181,7 +179,7 @@ router.put('/:linkId', Authenticate, async (req, res) => {
 
         // Hash the URL to generate a unique short code
         const hash = crypto.createHash('md5').update(destinationUrl).digest('hex').slice(0, 8); // Short 8-char hash
-        const shortUrl = `${BASE_URL}/${hash}`; // Create shortened URL
+        const shortUrl = `${BASE_BACKEND_URL}/${hash}`; // Create shortened URL
 
         const currentDate = new Date();
         const expirationDate = expiration ? new Date(expiration) : null;     

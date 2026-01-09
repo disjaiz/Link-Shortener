@@ -2,11 +2,11 @@ import {useState, useEffect }from 'react'
 import style from './Links.module.css'
 import { format, parse } from 'date-fns';
 import no_data_img from '../images/no_data.png';
-
 import PropTypes from 'prop-types';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
+
 function Analytics({ links }) {
-  const backendUrl = 'http://localhost:3000/';
   const [currentPage, setCurrentPage] = useState(1);
   const linksPerPage = 7;
   const [totalPages, setTotalPages] = useState(0);
@@ -54,7 +54,7 @@ function Analytics({ links }) {
                       <tr key={index}>
                           <td> {format(new Date(link.dateCreated), 'MMM dd, yyyy')}  {format(parse(link.timeCreated, 'hh:mm a', new Date()), 'HH:mm')}</td>
                           <td style={{ position: 'relative' }}> {link.originalUrl} </td>
-                          <td style={{ position: 'relative' }}>{`${backendUrl}${link.shortCode}`}</td>
+                          <td style={{ position: 'relative' }}>{`${BACKEND_URL}${link.shortCode}`}</td>
                           <td> {format(new Date(link.dateCreated), 'MMM dd, yyyy')}  {format(parse(link.timeCreated, 'hh:mm a', new Date()), 'HH:mm')}</td>
                           <td> {format(new Date(link.dateCreated), 'MMM dd, yyyy')}  {format(parse(link.timeCreated, 'hh:mm a', new Date()), 'HH:mm')}</td>
                       </tr>

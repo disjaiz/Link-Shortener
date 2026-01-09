@@ -19,6 +19,13 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
+// app.use(cors({
+//   origin: 'http://localhost:5173',
+//   credentials: true, 
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+// }));
+
 
 import routerUser from './Routes/User.js';
 import routerLinks from './Routes/Links.js';
@@ -33,7 +40,7 @@ app.get('/:code', async (req, res) => {
     const { code } = req.params;
 
     const user = await User.findOne({  "links.shortCode": code });
-    if (!user) return res.status(404).send(`Short link not found ${code},   ||||  ${user}`);
+    // if (!user) return res.status(404).send(`Short link not found ${code},   ||||  ${user}`);
 
     const link = user.links.find((l) => l.shortCode === code);
 

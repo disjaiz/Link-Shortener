@@ -23,7 +23,6 @@ router.get('/' , async(req, res)=>{
 router.delete('/deleteAll', async(req, res)=>{
     try{
         await User.deleteMany();
-    
         res.json({msg: "All users deleted."});
     }
     catch(err){
@@ -35,21 +34,16 @@ router.delete('/deleteAll', async(req, res)=>{
 router.post('/signup', async (req, res) => {
     const { username, email, mobilenum, password, confirmPassword } = req.body;
 
-    if (!username || !email || !mobilenum || !password || !confirmPassword) {
-        return res.status(400).json({ msg: "All fields are required." });
-    }
+    if (!username || !email || !mobilenum || !password || !confirmPassword)  return res.status(400).json({ msg: "All fields are required." });
+    
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-        return res.status(400).json({ msg: "User with this email already exists." });
-    }
+    if (existingUser)  return res.status(400).json({ msg: "User with this email already exists." });
+    
     const existingNum = await User.findOne({ mobileNo: mobilenum });
-    if (existingNum) {
-        return res.status(400).json({ msg: "User with this number already exists." });
-    }  
+    if (existingNum) return res.status(400).json({ msg: "User with this number already exists." });
+    
     const existingUserName = await User.findOne({ name: username });
-    if (existingUserName) {
-        return res.status(400).json({ msg: "User with this name already exists." });
-    }
+    if (existingUserName) return res.status(400).json({ msg: "User with this name already exists." });
 
     try {
         const hashPass = await bcrypt.hash(password, 10);
@@ -61,7 +55,7 @@ router.post('/signup', async (req, res) => {
         });
         const payload = { id: user.id };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "5h" });
-        // console.log('token of signin', token);
+        
         res.cookie('Token', token, {
             httpOnly: true,
             maxAge: 5 * 60 * 60 * 1000,
@@ -102,6 +96,7 @@ router.post('/login', async (req, res)=>{
                 maxAge:5 * 60 * 60 * 1000,
                 sameSite: 'None', 
                 secure: true,
+
               });
           
             return res.status(200).json({msg: "You are logged in!" ,existingUser});

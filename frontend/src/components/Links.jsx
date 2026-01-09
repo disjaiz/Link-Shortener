@@ -11,9 +11,7 @@ import no_data_img from '../images/no_data.png';
 import PropTypes from 'prop-types';
 
 
-
-const BACKEND_URL = "http://localhost:3000/";
-
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
 
 
 function Links({ links, refreshLinks }) {

@@ -4,7 +4,7 @@
 Few Accouts ---
 
 name - dany
-email - dany11@gmail.com
+email - dany11@email.com
 number - 3333333333
 password - 1
 
@@ -12,14 +12,6 @@ name - jon
 email - jon11@email.com
 number - 2222222222
 password - 1
-
-name - 
-email - 
-number - 
-password - 
-
-
-
 
 
 

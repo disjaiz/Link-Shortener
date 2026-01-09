@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faSun, faCloudSun, faCloudMoon, faMoon } from '@fortawesome/free-solid-svg-icons';
 import {createLink} from '../FetchMaker';
 
-const BACKEND_URL = 'http://localhost:3000';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
 
 const DashboardLander = () => {
   const [remarkInputText, setRemarkInputText] = useState('');
@@ -44,7 +44,7 @@ const DashboardLander = () => {
   const [links, setLinks] = useState([]);
 
   const fetchLinks = async () => {
-    const res = await fetch(`${BACKEND_URL}/links/all-links`, {
+    const res = await fetch(`${BACKEND_URL}links/all-links`, {
       credentials: 'include'
     });
     const data = await res.json();
@@ -155,7 +155,7 @@ const DashboardLander = () => {
 
  const handleLogout = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/user/logout`, {
+      const response = await fetch(`${BACKEND_URL}user/logout`, {
         method: 'POST',
         credentials: 'include',
       });   

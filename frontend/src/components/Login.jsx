@@ -36,7 +36,6 @@ function Login() {
       setLoginData({ ...loginData, [name]: value });
     };
 
-
   //=========================================== handle signup=======================================
     const handleSignup = async (e) => {
       e.preventDefault();
