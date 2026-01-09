@@ -82,8 +82,9 @@ function Login() {
       try{
         const response = await login(loginData);
         const text = await response.text();
-console.log('raw response:', text);
-const data = text ? JSON.parse(text) : {};
+        console.log('raw response:', text);
+        const data = text ? JSON.parse(text) : {};
+
         
         if (response.status === 200) {
           console.log('logged in successfully');
