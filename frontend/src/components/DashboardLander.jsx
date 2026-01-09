@@ -45,7 +45,8 @@ const DashboardLander = () => {
 
   const fetchLinks = async () => {
     const res = await fetch(`${BACKEND_URL}links/all-links`, {
-      credentials: 'include'
+      credentials: 'include',
+      method: "GET",
     });
     const data = await res.json();
     setLinks(data);
