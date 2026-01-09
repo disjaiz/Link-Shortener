@@ -119,7 +119,6 @@ const DashboardLander = () => {
       ...formData,
       expiration: expiration ? formData.expiration : null, // Set expiration only if toggler is on
     };
-
     console.log("Link Submitted:", linkData);
 
     // 🔍 1. Check if shortUrl already exists
@@ -132,24 +131,30 @@ const DashboardLander = () => {
     // }
 
     // ✅ 2. If NO duplicate, create the link
-    const response = await createLink(linkData);
-    const data = await response.json();
-    console.log("link created data", data);
-
-    if (response.status === 200) {
-      console.log(data);
-      console.log('link created succcessfully');
-       await fetchLinks();   // 🔥 refresh links
-      handleClear();
-      handleCloseModal();
-    }                                       
-    else if (response.status === 400) {
-      alert(data.msg);
-      console.log(data);
-    }                                     
-    else {
-      alert('Error adding data!');
-      console.error(data);
+    try{
+      const response = await createLink(linkData);
+      const data = await response.json();
+      console.log("link created data", data);
+      
+      if (response.status === 200) {
+        console.log(data);
+        console.log('link created succcessfully');
+        await fetchLinks();   // 🔥 refresh links
+        handleClear();
+        handleCloseModal();
+      }                                       
+      else if (response.status === 400) {
+        alert(data.msg);
+        console.log(data);
+      }                                     
+      else {
+        alert('Error adding data!');
+        console.error(data);
+      }
+    }
+    catch (error) {
+      console.error('Network Error:', error);
+      console.log('Network error. Please check your connection and try again.');
     }
   };
 

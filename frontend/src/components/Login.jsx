@@ -7,7 +7,6 @@ import openEye from '../images/openEye.png'
 import closedEye from '../images/closeEye.png'
 import signup, {login} from '../FetchMaker';
 
-
 function Login() {
   const [isSignup, setIsSignup] = useState(true); 
   const [showPassword, setShowPassword] = useState(false);
@@ -40,29 +39,26 @@ function Login() {
     const handleSignup = async (e) => {
       e.preventDefault();
 
-  if (signupData.password !== signupData.confirmPassword) {
-    console.log('Passwords do not match.');
-    return;
-  }
+      if (signupData.password !== signupData.confirmPassword) {
+        console.log('Passwords do not match.');
+        return;
+      }
+    
+      const mobileRegex = /^\d{10}$/;
+      if (!mobileRegex.test(signupData.mobilenum)) {
+        console.log('Mobile number must be exactly 10 digits.');
+        return;
+      }
 
-  const mobileRegex = /^\d{10}$/;
-  if (!mobileRegex.test(signupData.mobilenum)) {
-    console.log('Mobile number must be exactly 10 digits.');
-    return;
-  }
-    
       try {
-        // console.log('Signup Data:', signupData);
         const response = await signup(signupData);
-    
         if (response.ok) {
           // const data = await response.json();
           console.log('Signed up successfully!');
-          // console.log('Success:', data);
 
           navigate('/dashboardlander', { state: { username: signupData.username} });
-
-        } else {
+        }
+        else {
           const errorData = await response.json();
           console.error('Error:', errorData);
     
@@ -72,7 +68,8 @@ function Login() {
             console.log('An error occurred. Please try again later.');
           }
         }
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Network Error:', error);
         console.log('Network error. Please check your connection and try again.');
       }
@@ -80,31 +77,35 @@ function Login() {
 
   // ===========================================handle login==============================================================
     const handleLogin = async (e) => {
-     
-      // console.log('Login Data:', loginData);
       e.preventDefault();
   
-      const response = await login(loginData);
-      const data = await response.json();
-  
-      if (response.status === 200) {
-        console.log(data.existingUser.name);
-        console.log('logged in successfully');
-        navigate('/dashboardlander', { state: { username: data.existingUser.name} });
-      }                                       
-      else if (response.status === 400) {
-        console.log(data.msg);
-        console.log(data);
-      }                                     
-      else {
-        console.log('Error adding data!');
-        console.error(data);
+      try{
+        const response = await login(loginData);
+        const data = await response.json();
+        
+        if (response.status === 200) {
+          console.log(data.existingUser.name);
+          console.log('logged in successfully');
+          navigate('/dashboardlander', { state: { username: data.existingUser.name} });
+        }                                       
+        else if (response.status === 400) {
+          console.log(data.msg);
+          console.log(data);
+        }                                     
+        else {
+          console.log('Error adding data!');
+          console.error(data);
+        }
+      }
+      catch (error) {
+        console.error('Network Error:', error);
+        console.log('Network error. Please check your connection and try again.');
       }
     };
+    
 // ===========================================================================================================================================
   return (
     <div className={style.container}>
-        {/* <img src={cuvette_logo} alt="cuvette_logo" className={style.cuvette_logo} /> */}
         <img src={trimlyLogo} alt="trimly_logo" className={style.trimly_logo} /> 
 
     
