@@ -26,7 +26,7 @@ router.post('/create-link', Authenticate, async (req, res) => {
         console.log("hash- " , hash)
 
 
-        const shortUrl = `${BASE_BACKEND_URL}${hash}`; // Create shortened URL
+        const shortUrl = `${BASE_BACKEND_URL}${hash}`;   // Create shortened URL
         const currentDate = new Date();
         const expirationDate = expiration ? new Date(expiration) : null;
 
