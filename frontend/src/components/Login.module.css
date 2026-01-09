@@ -1,0 +1,137 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    font-family: Manrope , sans-serif !important;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+.trimly_logo{
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 1;
+    width: 200px;
+}
+.right_side{
+    height: 100%;
+    flex: 1.2;
+    position: relative;
+    background-color: aqua;
+}
+.main_image{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.topRightBtns{
+    position: absolute;
+    z-index: 1;
+    padding: 0.7rem 1rem;
+    border-radius: 0.3rem;
+    border: none;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+    font-family: inherit;
+}
+  
+.topRightBtns:hover {
+    background-color: #1B48DA !important;
+    color: white;
+  }
+
+.left_side{
+    flex: 1;
+    height: 100%;
+    display: flex;
+    font-family: inherit;
+    flex-direction: column;
+    /* align-items: center; */
+    padding: 7rem 8rem 0 8rem;
+}
+.form_container{
+    /* background-color: rgb(223, 188, 181); */
+    display: flex;
+    flex-direction: column;
+        align-items: center;  
+         justify-content: center; 
+    /*padding-left: 4rem; */
+    width: 80%;
+}
+.heading{
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: #3B3C51;
+    font-weight: 600;
+} 
+.input{
+    width: 92%;
+    padding: 0.4rem 1rem ;
+    border-radius: 0.3rem;
+    border: 1px solid #B3B3B3;
+    margin-bottom: 0.7rem; 
+    font-family: inherit;
+}
+.inputWrapper {
+  position: relative;
+  width: 92%;
+  background-color: turquoise;
+}
+.passwordInputContainer {
+  width: 100%;
+  padding: 0.4rem 1rem ;
+  border-radius: 0.3rem;
+  border: 1px solid #B3B3B3;
+  font-family: inherit;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  user-select: none;
+  height: 20px;
+}
+.inputMarginBottom{
+    margin-bottom: 0.7rem; 
+    padding: 0.4rem 1rem ;
+}
+.registerBtn{
+    width: 92%;
+    padding: 0.4rem 0;
+    border-radius: 0.3rem;
+    border: none; 
+    font-family: inherit;
+    margin-top: 0.6rem;
+    margin-bottom: 0.6rem;
+    background-color: #1B48DA;
+    color: white;
+    font-weight: 600;
+}
+.registerBtn:active {
+    animation: clickAnimation 0.2s ease; 
+  }
+@keyframes clickAnimation {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.95);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+
+
+
+
