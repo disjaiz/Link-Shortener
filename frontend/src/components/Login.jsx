@@ -81,22 +81,22 @@ function Login() {
   
       try{
         const response = await login(loginData);
-        const data = await response.json();
-        console.log('respinse -- ', response) ;  
-        console.log('data-- ', data) ;  
+        const text = await response.text();
+console.log('raw response:', text);
+const data = text ? JSON.parse(text) : {};  
         
-        if (response.status === 200) {
-          console.log('logged in successfully');
-          navigate('/dashboardlander', { state: { username: data.existingUser.name} });
-        }                                       
-        else if (response.status === 400) {
-          console.log(data.msg);
-          console.log(data);
-        }                                     
-        else {
-          console.log('Error adding data!');
-          console.error(data);
-        }
+        // if (response.status === 200) {
+        //   console.log('logged in successfully');
+        //   navigate('/dashboardlander', { state: { username: data.existingUser.name} });
+        // }                                       
+        // else if (response.status === 400) {
+        //   console.log(data.msg);
+        //   console.log(data);
+        // }                                     
+        // else {
+        //   console.log('Error adding data!');
+        //   console.error(data);
+        // }
       }
       catch (error) {
         console.error('Network Error:', error);
