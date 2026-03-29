@@ -60,7 +60,6 @@ router.post('/signup', async (req, res) => {
                 httpOnly: true,
                 secure: isProd,
                 sameSite: isProd ? "none" : "lax",
-                ...(isProd && { domain: ".onrender.com" })
             });
         
         // res.cookie('token', token, {
@@ -105,7 +104,6 @@ router.post('/login', async (req, res)=>{
                 httpOnly: true,
                 secure: isProd,
                 sameSite: isProd ? "none" : "lax",
-                ...(isProd && { domain: ".onrender.com" })
             });
 
             // store token in cokkie
