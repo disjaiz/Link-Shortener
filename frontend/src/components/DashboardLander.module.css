@@ -9,7 +9,6 @@
     font-family: Manrope , sans-serif !important;
 }
 .leftpanel {
-    /* width: 16rem;  */
     width: 20%;
     height: 100%;
     padding: 1.4rem 1rem; 
@@ -17,12 +16,11 @@
     flex-direction: column;
     overflow-y: auto; 
 }
-/* .trimly_Logo {
-    width: 130px;
-    height: auto;
-    margin-bottom: 2.5rem;
-    padding-left: 9px;
-} */
+.divider {
+  margin: 30px -15px 0 -15px; 
+  border: none;
+  border-top: 1px solid #ddd;
+}
  .trimly_Logo {
     width: 170px;
     height: auto;
@@ -42,7 +40,7 @@
     margin-top: 0;
 }
 .settings{
-    margin-top: 2.5rem;
+    margin-top: 1.5rem;
     align-items: center;
     gap: 5px;
     display: flex;
@@ -52,7 +50,6 @@
     display: grid;
     grid-template-rows: 70px 1fr;
     height: 100vh;
-    /* flex-grow: 1; */
     width: 80%;
  }
 .navbar {

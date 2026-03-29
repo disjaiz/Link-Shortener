@@ -1,10 +1,12 @@
 import {useState, useEffect }from 'react'
 import style from './Links.module.css'
-import { format, parse } from 'date-fns';
+import { format} from 'date-fns';
 import no_data_img from '../images/no_data.png';
 import PropTypes from 'prop-types';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
+// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const isProd = import.meta.env.MODE === "production";
+const BACKEND_URL= isProd ? 'https://link-shortener-backend-xf73.onrender.com/' : "http://localhost:3000/";
 
 function Analytics({ links }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,15 +23,26 @@ function Analytics({ links }) {
   }, [links, linksPerPage]);
 
 
+  const allClicks = links.flatMap(link =>
+    (link.analytics || []).map(a => ({
+      ...a,
+      originalUrl: link.originalUrl,
+      shortCode: link.shortCode
+    }))
+  );
+
+  allClicks.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+
   // Pagination logic
   const indexOfLastLink = currentPage * linksPerPage;
   const indexOfFirstLink = indexOfLastLink - linksPerPage;
   // const currentLinks = links.slice(indexOfFirstLink, indexOfLastLink);
-  const currentLinks = Array.isArray(links) ? links.slice(indexOfFirstLink, indexOfLastLink) : [];
+
+  // const currentLinks = Array.isArray(links) ? links.slice(indexOfFirstLink, indexOfLastLink) : [];
+  const currentLinks = Array.isArray(links) ?  allClicks.slice(indexOfFirstLink, indexOfLastLink) : [];
 
 
-  
-// ===============================================================================================================================================
   return (
       <div className={style.container}>
 
@@ -41,7 +54,7 @@ function Analytics({ links }) {
           <table className={style.table}>
               <thead>
                   <tr>
-                      <th>Date</th>
+                      <th>Timestamp</th>
                       <th>Original Link</th>
                       <th>Short Link</th>
                       <th>IP Address</th>
@@ -52,11 +65,13 @@ function Analytics({ links }) {
               <tbody>
                   {currentLinks.map((link, index) => (
                       <tr key={index}>
-                          <td> {format(new Date(link.dateCreated), 'MMM dd, yyyy')}  {format(parse(link.timeCreated, 'hh:mm a', new Date()), 'HH:mm')}</td>
+                          <td>{format(new Date(link.timestamp), 'MMM dd, yyyy HH:mm')}</td>
+
                           <td style={{ position: 'relative' }}> {link.originalUrl} </td>
                           <td style={{ position: 'relative' }}>{`${BACKEND_URL}${link.shortCode}`}</td>
-                          <td> {format(new Date(link.dateCreated), 'MMM dd, yyyy')}  {format(parse(link.timeCreated, 'hh:mm a', new Date()), 'HH:mm')}</td>
-                          <td> {format(new Date(link.dateCreated), 'MMM dd, yyyy')}  {format(parse(link.timeCreated, 'hh:mm a', new Date()), 'HH:mm')}</td>
+                          
+                           <td>{link.ip}</td>
+                           <td>{link.os || "—"}</td>
                       </tr>
                   ))}
               </tbody>
@@ -163,8 +178,6 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange }) => {
     </>
   );
 };
-
-
 Analytics.propTypes = {
   links: PropTypes.array,
   refreshLinks: PropTypes.func,

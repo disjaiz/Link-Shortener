@@ -11,8 +11,9 @@ import no_data_img from '../images/no_data.png';
 import PropTypes from 'prop-types';
 
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
-
+// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
+const isProd = import.meta.env.MODE === "production";
+const BACKEND_URL= isProd ? 'https://link-shortener-backend-xf73.onrender.com/' : "http://localhost:3000/";
 
 function Links({ links, refreshLinks }) {
   const formRef = useRef(null); 
@@ -30,25 +31,6 @@ function Links({ links, refreshLinks }) {
       expiration: "",
   });
 
-
-  // useEffect(() => {
-  //     fetchLinks();
-  // }, []);
-
-  // const fetchLinks = async () => {
-  //     try {
-  //         const response = await fetch('http://localhost:3000/links/all-links', {
-  //             method: 'GET',
-  //             credentials: 'include', // Ensures cookies are sent
-  //         });
-  //         const allLinks = await response.json();
-  //         setLinks(allLinks);      
-  //         console.log(allLinks)
-  //     } catch (error) {
-  //         console.error('Error fetching links:', error);
-  //     }
-  // };
-
   useEffect(() => {
     if (links.length > 0) {
       const pages = Math.ceil(links.length / linksPerPage);
@@ -56,6 +38,7 @@ function Links({ links, refreshLinks }) {
     } else {
       setTotalPages(0);
     }
+
   }, [links, linksPerPage]);
 
   const handleCopy = (Url) => {
@@ -63,7 +46,7 @@ function Links({ links, refreshLinks }) {
       console.log('Copied to clipboard!');
   };
 
-  const handleEdit =async (id) => {
+  const handleEditLink =async (id) => {
     setSelectedLinkId(id);
       try {
         const response =await fetch(`http://localhost:3000/links/${id}`, {
@@ -130,7 +113,6 @@ function Links({ links, refreshLinks }) {
       expiration: expiration ? formData.expiration : null, // Set expiration only if toggler is on
     };
 
-    // console.log("Link Submitted:", linkData);
     try {
       const response = await fetch(`${BACKEND_URL}links/${selectedLinkId}`, {
         method: 'PUT',
@@ -148,7 +130,7 @@ function Links({ links, refreshLinks }) {
 
       if (response.status === 200) {
         console.log('link updated succcessfully');
-        await refreshLinks();   // 🔥 refresh links
+        await refreshLinks(); 
         handleClear();
         setIsEditModalOpen(false);
       }                                       
@@ -168,8 +150,6 @@ function Links({ links, refreshLinks }) {
   };
 
 
-  
-// ===============================================================================================================================================
   return (
       <div className={style.container}>
 
@@ -177,21 +157,19 @@ function Links({ links, refreshLinks }) {
            <img src={no_data_img} className={style.bgNoDataImg} alt="No Data" />
         )}
 
-
-          <table className={style.table}>
-              <thead>
-                  <tr>
-                      <th>Date</th>
-                      <th>Original Link</th>
-                      <th>Short Link</th>
-                      <th>Remarks</th>
-                      <th>Clicks</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                  </tr>
-              </thead>
-
-              <tbody>
+        <table className={style.table}>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Original Link</th>
+                    <th>Short Link</th>
+                    <th>Remarks</th>
+                    <th>Clicks</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
                   {currentLinks.map((link, index) => (
                       <tr key={index}>
                           <td> {format(new Date(link.dateCreated), 'MMM dd, yyyy')}  {format(parse(link.timeCreated, 'hh:mm a', new Date()), 'HH:mm')}</td>
@@ -226,44 +204,42 @@ function Links({ links, refreshLinks }) {
                              </span>
                          </td>
                           <td>  
-                                <img src={edit} alt="edit" onClick={() => handleEdit(link._id)}/>
+                                <img src={edit} alt="edit" onClick={() => handleEditLink(link._id)}/>
                                 <img src={del} alt="del" onClick={() => handleDelete(link._id)} />
                           </td>
                       </tr>
                   ))}
-              </tbody>
-          </table>
+            </tbody>
+        </table>
 
-          {/* Pagination Controls */}
+        {/* Pagination Controls */}
         <div  className={style.paginationContainer}>
               <SimplePagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={setCurrentPage}
               />
-            </div>
+        </div>
 
+        {isDeleteModalOpen && (
+           <>
+            <div className={style.backdrop}></div> {/* Dimming effect */}
+             <div className={style.modalContent}>
+               <img src={cross} alt="cross" className={style.crossimg} onClick={() => setIsDeleteModalOpen(false)}/>
+               <p>Are you sure, you want to remove it?</p>
+               <div className={style.modalButtons}>
+                 <button className={style.noBtn} onClick={handleDeleteCloseModal}>
+                   No
+                 </button>
+                 <button className={style.yesBtn} onClick={handleConfirmDelete}>
+                   Yes
+                 </button>
+               </div>
+             </div>
+           </>
+         )}
 
-     {isDeleteModalOpen && (
-        <>
-         <div className={style.backdrop}></div> {/* Dimming effect */}
-          <div className={style.modalContent}>
-            <img src={cross} alt="cross" className={style.crossimg} onClick={() => setIsDeleteModalOpen(false)}/>
-            <p>Are you sure, you want to remove it?</p>
-            <div className={style.modalButtons}>
-              <button className={style.noBtn} onClick={handleDeleteCloseModal}>
-                No
-              </button>
-              <button className={style.yesBtn} onClick={handleConfirmDelete}>
-                Yes
-              </button>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Modal */}
-      {isEditModalOpen && (
+        {isEditModalOpen && (
         <>
           <div className={style.backdrop}></div> {/* Dimming effect */}
           <div className={style.editmodalContent}>
@@ -320,10 +296,10 @@ function Links({ links, refreshLinks }) {
             </div>
           </div>
         </>
-      )}
+        )}
 
-       </div>
-          );
+      </div>
+      );
 }
 
 export default Links
@@ -331,11 +307,7 @@ export default Links
 
 
 
-
-
-
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
 
 const SimplePagination = ({ currentPage, totalPages, onPageChange }) => {
   return (

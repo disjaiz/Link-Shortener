@@ -1,12 +1,13 @@
 import express from 'express';
 const router = express.Router();
-import crypto from 'crypto'; // For hashing the URL
-import User from '../Schema/UserSchema.js'; // Import User model
-import  Authenticate  from '../Middleware/Authenticate.js'; // Middleware for authentication
+import crypto from 'crypto';
+import User from '../Schema/UserSchema.js'; 
+import  Authenticate  from '../Middleware/Authenticate.js'; 
 import {nanoid} from 'nanoid';
 
 // Project's backend base URL (update this when deployed)
-const BASE_BACKEND_URL = process.env.BASE_BACKEND_URL;
+const isProd = process.env.NODE_ENV === "production";
+const BASE_BACKEND_URL = isProd ? 'https://link-shortener-backend-xf73.onrender.com/' : 'http://localhost:3000/';
 
 router.post('/create-link', Authenticate, async (req, res) => {
 
@@ -17,26 +18,31 @@ router.post('/create-link', Authenticate, async (req, res) => {
             return res.status(400).json({ msg: 'Destination URL is required.' });
         }
 
-        const userId = req.user.id; // Get authenticated user ID from middleware
+        const userId = req.user.id; 
 
-        // Hash the URL to generate a unique short code
-        const hash = crypto.createHash('md5').update(destinationUrl).digest('hex').slice(0, 8); // Short 8-char hash
+        
+        const hash = crypto.createHash('md5').update(destinationUrl).digest('hex').slice(0, 8); 
 
-        console.log("destinationUrl- ", destinationUrl)
-        console.log("hash- " , hash)
-
-
-        const shortUrl = `${BASE_BACKEND_URL}${hash}`;   // Create shortened URL
+        const shortUrl = `${BASE_BACKEND_URL}${hash}`;   
         const currentDate = new Date();
         const expirationDate = expiration ? new Date(expiration) : null;
 
-        // Determine status based on expiration date
         const status = expirationDate && expirationDate < currentDate ? 'inactive' : 'active';
 
-        // Find the user and update their links array
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({msg: 'User not found.' });
+        }
+
+        const existingLink = user.links.find(
+          link => link.originalUrl === destinationUrl
+        );
+
+        if (existingLink) {
+          return res.status(200).json({
+            msg: "Link already exists",
+            link: existingLink
+          });
         }
 
         user.links.push({
@@ -51,7 +57,7 @@ router.post('/create-link', Authenticate, async (req, res) => {
             clicks: 0,
         });
 
-        await user.save(); // Save the user with the new link
+        await user.save(); 
 
         res.status(200).json({ msg: 'Short link created successfully.', shortUrl, user });
     } catch (error) {
@@ -60,11 +66,11 @@ router.post('/create-link', Authenticate, async (req, res) => {
     }
 });
 
-// Route to get all links for authenticated user
+//===========get all links for authenticated user=====================
 router.get('/all-links', Authenticate, async (req, res) => {
     try {
         const userId = req.user.id;
-        // Find user and return their links
+       
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ msg: 'User not found.' });
@@ -83,7 +89,6 @@ router.delete('/:linkId', Authenticate, async (req, res) => {
 
     try {
         const userId = req.user.id;
-        // Find the user and remove the link with the given ID
         const user = await User.findById(userId);
 
         if (!user) {
@@ -96,8 +101,8 @@ router.delete('/:linkId', Authenticate, async (req, res) => {
             return res.status(404).json({ message: 'Link not found' });
         }
 
-        user.links.splice(linkIndex, 1); // Remove the link from the array
-        await user.save(); // Save the updated user document
+        user.links.splice(linkIndex, 1); 
+        await user.save();
 
         res.status(200).json({ message: 'Link deleted successfully' });
     } catch (error) {
@@ -107,7 +112,7 @@ router.delete('/:linkId', Authenticate, async (req, res) => {
 });
 
 
-// ===============================fetch link thru id =======================
+// ==================fetch link thru id =======================
 router.get('/:linkId', Authenticate,  async (req, res) => {
   const { linkId } = req.params;
 
@@ -118,13 +123,11 @@ router.get('/:linkId', Authenticate,  async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Find the link by linkId within the links array
-    const link = user.links.id(linkId); // Mongoose's `id` method finds a subdocument by ID
+    const link = user.links.id(linkId); 
     if (!link) {
       return res.status(404).json({ message: 'Link not found' });
     }
 
-    // Respond with the link data
     res.status(200).json(link);
   } catch (error) {
     console.error('Error fetching link:', error);
@@ -133,7 +136,7 @@ router.get('/:linkId', Authenticate,  async (req, res) => {
 });
 
 
-// ===================Update link route===============================
+// ==================Update link route===============================
 // router.put('/:linkId', Authenticate, async (req, res) => {
 //     console.log('INTO-----------')
 //   const { linkId } = req.params;
@@ -175,22 +178,16 @@ router.put('/:linkId', Authenticate, async (req, res) => {
             return res.status(400).json({ msg: 'Destination URL is required.' });
         }
 
-        const userId = req.user.id; // Get authenticated user ID from middleware
+        const userId = req.user.id;
 
-        // Hash the URL to generate a unique short code
-        const hash = crypto.createHash('md5').update(destinationUrl).digest('hex').slice(0, 8); // Short 8-char hash
-        const shortUrl = `${BASE_BACKEND_URL}/${hash}`; // Create shortened URL
+        const hash = crypto.createHash('md5').update(destinationUrl).digest('hex').slice(0, 8); 
+        const shortUrl = `${BASE_BACKEND_URL}/${hash}`;
 
         const currentDate = new Date();
         const expirationDate = expiration ? new Date(expiration) : null;     
       
-
-        // Determine status based on expiration date
         const status = expirationDate && expirationDate < currentDate ? 'inactive' : 'active';
        
-
-
-        // Find the user and the link to update
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ msg: 'User not found.' });
@@ -202,7 +199,6 @@ router.put('/:linkId', Authenticate, async (req, res) => {
             return res.status(404).json({ msg: 'Link not found.' });
         }
 
-        // Update the link with new data
         user.links[linkIndex].originalUrl = destinationUrl;
         user.links[linkIndex].shortUrl = shortUrl;
         user.links[linkIndex].shortCode = hash;
@@ -212,23 +208,13 @@ router.put('/:linkId', Authenticate, async (req, res) => {
         user.links[linkIndex].dateCreated = currentDate.toDateString();
         user.links[linkIndex].timeCreated = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        await user.save(); // Save the user with the updated link
+        await user.save();
 
         res.status(200).json({ msg: 'Link updated successfully.', status });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: 'Internal server error.' });
     }
-});
-
-// ===================Check if shortUrl exists===============================
-router.get("/check", async (req, res) => {
-  const { shortUrl } = req.query;
-  console.log("url geot " , shortUrl)
-
-  const existing = await User.findOne({ "links.shortUrl": shortUrl });
-
-  res.json({ exists: !!existing });
 });
 
 

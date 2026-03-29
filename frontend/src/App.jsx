@@ -5,13 +5,13 @@ import DashboardLander from './components/DashboardLander';
 import Links from './components/Links';
 import Analytics from './components/Analytics';
 import Dashboard from './components/DashboardLander';
-
+import Settings from './components/Settings';
 
 function App() {
   const routerdata = createBrowserRouter([
     {
-    path: "/",
-    element: <Login />,
+      path: "/",
+      element: <Login />,
     },
     {
       path: "/dashboardlander",
@@ -29,6 +29,10 @@ function App() {
       path: "/dashboardlander/analytics",
       element: <Analytics />,
     },
+    {
+      path: "/dashboardlander/settings",
+      element: <Settings />,
+    },
 ])
 
   return (
@@ -39,4 +43,3 @@ function App() {
 }
 
 export default App
-

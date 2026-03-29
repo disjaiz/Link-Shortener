@@ -2,10 +2,9 @@ import jwt from 'jsonwebtoken';
 import User from '../Schema/UserSchema.js';
 
 const Authenticate = async (req, res, next) => {
-    // console.log('cookie', req.cookies);
 
     try {
-        const token = req.cookies.Token;
+        const token = req.cookies.token;
         if (!token) {
             return res.status(401).json({ msg: 'Unauthorized: No token provided.' });
         }

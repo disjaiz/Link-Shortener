@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema({
         status: { type: String, enum: ['active', 'inactive'], default: 'active' },
         remark: { type: String, default: '' },
         clicks: { type: Number, default: 0 },
+        analytics: [{
+         timestamp: { type: Date, default: Date.now },
+         ip: String,
+         os: String,
+         device: String
+         }]
     }],
 });
 

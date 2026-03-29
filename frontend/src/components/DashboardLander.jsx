@@ -1,10 +1,11 @@
-import { useState, useEffect , useRef} from "react";
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect , useRef, useContext} from "react";
+import { useNavigate} from 'react-router-dom';
 import Dashboard from "./Dashboard";
 import Links from "./Links";
 import Analytics from "./Analytics";
+import Settings from "./Settings";
 import trimlyLogo from '../images/trimly.png'
-// import settings from '../images/settings.png'
+import settings from '../images/settings.png'
 import settings_grey from '../images/settings_grey.png'
 import dashboard from '../images/dashboard.png'
 import dashboard_grey from "../images/dashboard_grey.png";
@@ -18,27 +19,31 @@ import style from './DashboardLander.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faSun, faCloudSun, faCloudMoon, faMoon } from '@fortawesome/free-solid-svg-icons';
 import {createLink} from '../FetchMaker';
+import UserContext from "./UserContext";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
+
+// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
+const isProd = import.meta.env.MODE === "production";
+const BACKEND_URL= isProd ? 'https://link-shortener-backend-xf73.onrender.com/' : "http://localhost:3000/";
+
 
 const DashboardLander = () => {
+  const {user} = useContext(UserContext);
+  const navigate = useNavigate();
   const [remarkInputText, setRemarkInputText] = useState('');
   const formRef = useRef(null); 
   const [activeComponent, setActiveComponent] = useState("links"); 
   const [greeting, setGreeting] = useState('');
-  const [greetingIcon, setGreetingIcon] = useState('');
+  const [greetingIcon, setGreetingIcon] = useState(faSun);
   const [iconColor, setIconColor] = useState('#f5cf0f');
   const [day, setDay] = useState('');
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
-
-  const location = useLocation();
-  const username = location.state?.username || 'Guest';
-  const shortUsername = username.slice(0, 2).toUpperCase();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expiration, setExpiration] = useState(false);
 
+  const username = user || "Guest";
+  const shortUsername = username.slice(0, 2).toUpperCase();
 
   // ================================ fetch links===========================================
   const [links, setLinks] = useState([]);
@@ -48,14 +53,38 @@ const DashboardLander = () => {
       credentials: 'include',
       method: "GET",
     });
-    const data = await res.json();
-    setLinks(data);
-     localStorage.setItem('links', JSON.stringify(data));
+
+     if (res.status === 401) {
+      navigate('/');
+     }
+
+    const linksData = await res.json();
+  
+  
+    const now = new Date();
+
+    const updatedLinks = linksData.map(link => {
+      if (
+        link.expirationDate &&
+        link.status === 'active' &&
+        new Date(link.expirationDate) < now
+        ) {
+        return { ...link, status: 'inactive' };
+       }
+        return link;
+    });
+
+    setLinks(updatedLinks);
+    localStorage.setItem('links', JSON.stringify(updatedLinks));
   };
 
-  const filteredLinks = links.filter(link =>link.remark.toLowerCase().includes(remarkInputText.toLowerCase()));
+  const filteredLinks = Array.isArray(links)
+  ? links.filter(link =>
+      link?.remark?.toLowerCase?.().includes(remarkInputText?.toLowerCase?.() || "")
+    )
+  : [];
 
-  // ================================ =======================================
+  // ========================================================================================
 
   useEffect(() => {
     const currentHour = new Date().getHours();
@@ -93,6 +122,11 @@ const DashboardLander = () => {
     else fetchLinks();
   }, []);
 
+  useEffect(() => {
+  if (activeComponent === "links" || activeComponent === "analytics") {
+    fetchLinks();
+  }
+}, [activeComponent]);
 
   const handleCreateNewLink = () => {
     setIsModalOpen(true); 
@@ -122,25 +156,13 @@ const DashboardLander = () => {
     };
     console.log("Link Submitted:", linkData);
 
-    // 🔍 1. Check if shortUrl already exists
-    // const checkRes = await fetch(`http://localhost:3000/links/check?shortUrl=${linkData.destinationUrl}`);
-    // const checkData = await checkRes.json();
-    
-    // if (checkData.exists) {
-    //   alert("This short link already exists. Please try again.");
-    //   return; // ⛔ stop creation
-    // }
-
-    // ✅ 2. If NO duplicate, create the link
     try{
       const response = await createLink(linkData);
       const data = await response.json();
-      console.log("link created data", data);
       
       if (response.status === 200) {
-        console.log(data);
-        console.log('link created succcessfully');
-        await fetchLinks();   // 🔥 refresh links
+        console.log(data.msg);
+        await fetchLinks();   // refresh links
         handleClear();
         handleCloseModal();
       }                                       
@@ -175,12 +197,10 @@ const DashboardLander = () => {
     }
   };
 
-
 // ==================================================================================================================================
   return (
     <div className={style.container}>
           <div className={style.leftpanel}>
-              {/* <img src={cuvette_logo} alt="cuvette_logo" className={style.cuvetteLogo}/> */}
               <img src={trimlyLogo} alt="trimly_logo" className={style.trimly_Logo}/>
 
               {/* Navigation Buttons */}
@@ -202,90 +222,95 @@ const DashboardLander = () => {
                   onClick={() => setActiveComponent("links")}
                   className={style.toggleBtns}
                   style={{ backgroundColor: activeComponent === "links" ? "#F3F7FD" : "white", 
-                      color: activeComponent === "links" ? '#1B48DA' : 'black'
-                   }}>
-                      <img 
-                        src={activeComponent === "links" ? linksIcon : linksIcon_grey} 
-                        style={{marginLeft: '17px', height: '20px'}}/>
-                       Links
+                  color: activeComponent === "links" ? '#1B48DA' : 'black'
+                }}>
+                   <img 
+                      src={activeComponent === "links" ? linksIcon : linksIcon_grey} 
+                      style={{marginLeft: '17px', height: '20px'}}
+                    />
+                    Links
                 </p>
 
                 <p 
                   onClick={() => setActiveComponent("analytics")} 
                   className={style.toggleBtns}
                   style={{ backgroundColor: activeComponent === "analytics" ? "#F3F7FD" : "white",
-                      color: activeComponent === "analytics" ? '#1B48DA' : 'black'
-                   }}>
-                    <img 
-                      src={activeComponent === "analytics" ? analytics : analytics_grey} 
-                     style={{marginLeft: '17px', height: '20px'}}/> 
+                    color: activeComponent === "analytics" ? '#1B48DA' : 'black',
+                  }}>
+                  <img 
+                    src={activeComponent === "analytics" ? analytics : analytics_grey} 
+                    style={{marginLeft: '17px', height: '20px'}}/> 
                     Analytics
                 </p>
-
-              <p className={style.settings}>
-                <img src={settings_grey} alt="settings" style={{marginLeft: '17px', height: '20px'}}/>
-                Settings
-              </p>
+                <hr className={style.divider} />
+                <p 
+                  className={style.settings}  
+                  onClick={() => setActiveComponent("settings")} 
+                  style={{ backgroundColor: activeComponent === "settings" ? "#F3F7FD" : "white",
+                    color: activeComponent === "settings" ? '#1B48DA' : 'black',
+                    paddingTop: '0.6rem', paddingBottom: '0.6rem',borderRadius: '8px'
+                  }}>
+                  <img src={activeComponent === "settings" ? settings : settings_grey} 
+                  alt="settings" style={{marginLeft: '17px', height: '20px'}}/>
+                  Settings
+                </p>
           </div>
          
           {/* Render the selected component */}
           <div className={style.rightpanel}>
 
-          <div className={style.navbar}>
+            <div className={style.navbar}>
+              <div className={style.greeting}>
+                <p style={{color: '#181820', fontSize: '1.1rem', fontWeight: '600'}}> 
+                  <FontAwesomeIcon icon={greetingIcon} style={{color: iconColor}} /> {greeting}, {username}
+                </p>
+                <p style={{color: '#878BA9', fontSize: '0.8rem', marginLeft: '20px'}}>{day}, {month} {year}</p>
+              </div>
 
-            <div className={style.greeting}>
-              <p style={{color: '#181820', fontSize: '1.1rem', fontWeight: '600'}}> 
-                <FontAwesomeIcon icon={greetingIcon} style={{color: iconColor}} /> {greeting}, {username}
-              </p>
-              <p style={{color: '#878BA9', fontSize: '0.8rem', marginLeft: '20px'}}>{day}, {month} {year}</p>
+              <div className={style.rightSection}>
+                <button onClick={handleCreateNewLink}><img src={plus} /> Create new</button>
+                <input type="text" placeholder="Search by remarks" className={style.inputwithicon} value={remarkInputText} onChange={(e) => setRemarkInputText(e.target.value)}/>
+                <p className={style.userName} onClick={handleLogout}>{shortUsername}</p>
+                <div className={style.logoutDiv}>Logout</div>
+              </div>
             </div>
 
-            <div className={style.rightSection}>
-            <button onClick={handleCreateNewLink}><img src={plus} /> Create new</button>
-            <input type="text" placeholder="Search by remarks" className={style.inputwithicon} value={remarkInputText} onChange={(e) => setRemarkInputText(e.target.value)}/>
-            <p className={style.userName} onClick={handleLogout}>{shortUsername}</p>
-            <div className={style.logoutDiv}>Logout</div>
-            
-            </div>
-         </div>
+            {activeComponent === "dashboard" && (<Dashboard  links={links} />)}
 
-            {activeComponent === "dashboard" && <Dashboard />}
-
-            {/* {activeComponent === "links" && <Links />} */}
             {activeComponent === "links" && ( <Links links={filteredLinks} refreshLinks={fetchLinks} />)}
-
-            {/* {activeComponent === "analytics" && <Analytics />} */}
+           
             {activeComponent === "analytics" && ( <Analytics links={links} />)}
+
+            {activeComponent === "settings" && ( <Settings />)}
           </div>
 
-      {/* Modal */}
-      {isModalOpen && (
-        <>
-          <div className={style.backdrop}></div> {/* Dimming effect */}
-          <div className={style.modalContent}>
-            <p className={style.mHeading}>New Link</p>
-            <img onClick={handleCloseModal} src={close} className={style.closeimg}/>
-            <form  ref={formRef} onSubmit={handleCreateLink} className={style.form}>
-
-              <label htmlFor="destinationUrl" >Destination Url <span style={{color: 'red'}}>*</span></label>
-              <input 
-              type="url" 
+          {/* Modal */}
+          {isModalOpen && (
+            <>
+              <div className={style.backdrop}></div> 
+              <div className={style.modalContent}>
+                <p className={style.mHeading}>New Link</p>
+                <img onClick={handleCloseModal} src={close} className={style.closeimg}/>
+                <form  ref={formRef} onSubmit={handleCreateLink} className={style.form}>
+                   <label htmlFor="destinationUrl" >Destination Url <span style={{color: 'red'}}>*</span></label>
+                   <input 
+                   type="url" 
               name="destinationUrl" 
               placeholder="https://web.whatsapp.com/"
               value={formData.destinationUrl}
-              onChange={handleChange}
-              />
+                   onChange={handleChange}
+                   />
 
-              <label htmlFor="remarks">Remarks<span style={{color: 'red'}}>*</span></label>
-              <textarea 
-              name="remarks"
+                   <label htmlFor="remarks">Remarks<span style={{color: 'red'}}>*</span></label>
+                   <textarea 
+                   name="remarks"
               rows={5} 
               placeholder="Add remarks"
               value={formData.remarks}
-              onChange={handleChange}
-          />
+                   onChange={handleChange}
+                   />
 
-              <div className={style.expirationBox}>
+                   <div className={style.expirationBox}>
                 <label htmlFor="expiration">Link Expiration </label>
 
                 <div className={style.toggler}>   
@@ -299,24 +324,24 @@ const DashboardLander = () => {
                </button>
           </div>
 
-              </div>
-              
-              <input 
-              type="datetime-local" 
-              name="expiration" 
-              value={formData.expiration}
-              onChange={handleChange}
-              disabled={!expiration} 
-              />
-            </form>
+                   </div>
 
-            <div className={style.bottom}>
-              <button className={style.clearBtn} onClick={handleClear}>Clear</button>
-              <button className={style.createBtn} onClick={() => formRef.current.requestSubmit()}>Create New</button>
-            </div>
-          </div>
-        </>
-      )}
+                   <input 
+                   type="datetime-local" 
+                   name="expiration" 
+                   value={formData.expiration}
+                   onChange={handleChange}
+                   disabled={!expiration} 
+                   />
+                </form>
+
+                <div className={style.bottom}>
+                  <button className={style.clearBtn} onClick={handleClear}>Clear</button>
+                  <button className={style.createBtn} onClick={() => formRef.current.requestSubmit()}>Create New</button>
+                </div>
+              </div>
+            </>
+          )}
 
     </div>
   );

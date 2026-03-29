@@ -1,7 +1,33 @@
 *{
     box-sizing: border-box;
+    padding: 0;
+    margin: 0;
 }
 .container{
     width: 100%;
+    padding: 2rem 4rem;
+}
+#clicksCount{
+    font-weight: 600;
+    font-style: bold;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+.barChartContainer{
+    height: 480px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+}
+.barDiv{
+    padding: 1.5rem;
+    border: 2px solid rgb(237, 230, 230);
+    border-radius: 0.5rem;
+}
+.barHeading{
+    font-weight: 600;
+    font-style: bold;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
     
 }
