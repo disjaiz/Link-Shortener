@@ -5,35 +5,51 @@ import {
 } from "recharts";
 
 function Dashboard({ links }) {
-  const deviceData = Object.entries(
-     links.flatMap(link => link.analytics || [])
-          .reduce((acc, item) => {
-            const device = item.device || "unknown";
-            acc[device] = (acc[device] || 0) + 1;
-            return acc;
-          }, {})
-   ).map(([device, clicks]) => ({
-     name: device,
-     clicks
-   }));
+    const safeLinks = Array.isArray(links) ? links : [];
 
-  const dateData = Object.entries(
-    links.flatMap(link => link.analytics || [])
-         .reduce((acc, item) => {
-           const date = new Date(item.timestamp).toLocaleDateString();
-           acc[date] = (acc[date] || 0) + 1;
-           return acc;
-         }, {})
+    const deviceData = Object.entries(
+      safeLinks
+        .flatMap(link => Array.isArray(link.analytics) ? link.analytics : [])
+        .reduce((acc, item) => {
+          const device = item.device || "unknown";
+          acc[device] = (acc[device] || 0) + 1;
+          return acc;
+        }, {})
+    ).map(([device, clicks]) => ({
+      name: device,
+      clicks
+    }));
+
+    const dateData = Object.entries(
+    safeLinks
+      .flatMap(link => Array.isArray(link.analytics) ? link.analytics : [])
+      .reduce((acc, item) => {
+        const date = item.timestamp
+          ? new Date(item.timestamp).toLocaleDateString()
+          : "unknown";
+
+        acc[date] = (acc[date] || 0) + 1;
+        return acc;
+      }, {})
   ).map(([date, clicks]) => ({
     name: date,
     clicks
   }));
+
   dateData.sort((a, b) => new Date(a.name) - new Date(b.name));
 
   return (
     <div className={style.container}>
-      <p id={style.clicksCount}>Total Clicks : <span style={{color: "blue"}}>{links.reduce((total, link) => total + link.clicks, 0)}  </span></p>
-
+      <p id={style.clicksCount}>
+        Total Clicks :{" "}
+        <span style={{ color: "blue" }}>
+          {(Array.isArray(links) ? links : []).reduce(
+            (total, link) => total + (link.clicks || 0),
+            0
+          )}
+        </span>
+      </p>
+      
       <div className={style.barChartContainer} >
 
         <div className={style.barDiv}>

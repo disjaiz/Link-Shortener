@@ -23,13 +23,13 @@ function Analytics({ links }) {
   }, [links, linksPerPage]);
 
 
-  const allClicks = links.flatMap(link =>
-    (link.analytics || []).map(a => ({
-      ...a,
-      originalUrl: link.originalUrl,
-      shortCode: link.shortCode
-    }))
-  );
+ const allClicks = (Array.isArray(links) ? links : []).flatMap(link =>
+  (Array.isArray(link.analytics) ? link.analytics : []).map(a => ({
+    ...a,
+    originalUrl: link.originalUrl,
+    shortCode: link.shortCode
+  }))
+);
 
   allClicks.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
@@ -63,17 +63,21 @@ function Analytics({ links }) {
               </thead>
 
               <tbody>
-                  {currentLinks.map((link, index) => (
-                      <tr key={index}>
-                          <td>{format(new Date(link.timestamp), 'MMM dd, yyyy HH:mm')}</td>
+                  {(Array.isArray(currentLinks) ? currentLinks : []).map((link, index) => (
+                     <tr key={index}>
+                       <td>
+                         {link.timestamp
+                           ? format(new Date(link.timestamp), 'MMM dd, yyyy HH:mm')
+                           : "—"}
+                       </td>
 
-                          <td style={{ position: 'relative' }}> {link.originalUrl} </td>
-                          <td style={{ position: 'relative' }}>{`${BACKEND_URL}${link.shortCode}`}</td>
-                          
-                           <td>{link.ip}</td>
-                           <td>{link.os || "—"}</td>
-                      </tr>
-                  ))}
+                       <td>{link.originalUrl || "—"}</td>
+                       <td>{link.shortCode ? `${BACKEND_URL}${link.shortCode}` : "—"}</td>
+
+                       <td>{link.ip || "—"}</td>
+                       <td>{link.os || "—"}</td>
+                     </tr>
+                ))}
               </tbody>
           </table>
 

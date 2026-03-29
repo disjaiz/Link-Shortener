@@ -170,45 +170,70 @@ function Links({ links, refreshLinks }) {
                 </tr>
             </thead>
             <tbody>
-                  {currentLinks.map((link, index) => (
-                      <tr key={index}>
-                          <td> {format(new Date(link.dateCreated), 'MMM dd, yyyy')}  {format(parse(link.timeCreated, 'hh:mm a', new Date()), 'HH:mm')}</td>
-                          <td style={{ position: 'relative' }}> {link.originalUrl}
-                             <button onClick={() => handleCopy(link.originalUrl)} style={{backgroundColor:"white" ,cursor: 'pointer', zIndex:'1000', top:'20px', right:'0', position:'absolute'}}>
-                                <img src={copy} alt="copy" style={{height:'30px', width:'30px',}} />
-                              </button>
-                          </td>
-
-                          <td style={{ position: 'relative' }}>
-                              <a 
-                                href={`${BACKEND_URL}${link.shortCode}`} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                style={{ textDecoration: 'none', color: 'inherit' }}
-                                > 
-                                {BACKEND_URL}{link.shortCode}
-                              </a>
-
-                              <button
-                               onClick={() => handleCopy(`${BACKEND_URL}${link.shortCode}`)} 
-                               style={{backgroundColor:"white" ,cursor: 'pointer', zIndex:'1000', top:'20px', right:'0', position:'absolute'}}>
-                                <img src={copy} alt="copy" style={{height:'30px', width:'30px',}} />
-                              </button>
-                          </td>
-
-                          <td>{link.remark}</td>
-                          <td>{link.clicks}</td>
-                          <td>
-                             <span className={`${style.statusCell} ${link.status === 'active' ? style.active : style.inactive}`}>
-                              {link.status}
-                             </span>
-                         </td>
-                          <td>  
-                                <img src={edit} alt="edit" onClick={() => handleEditLink(link._id)}/>
-                                <img src={del} alt="del" onClick={() => handleDelete(link._id)} />
-                          </td>
-                      </tr>
-                  ))}
+                {(Array.isArray(currentLinks) ? currentLinks : []).map((link, index) => {
+                  let formattedDate = "—";
+                    
+                  try {
+                    if (link.dateCreated && link.timeCreated) {
+                      const parsedTime = parse(link.timeCreated, 'hh:mm a', new Date());
+                      formattedDate = `${format(new Date(link.dateCreated), 'MMM dd, yyyy')} ${format(parsedTime, 'HH:mm')}`;
+                    }
+                  } catch (e) {
+                    formattedDate = "—";
+                  }
+                
+                  return (
+                    <tr key={index}>
+                      <td>{formattedDate}</td>
+                  
+                      <td style={{ position: 'relative' }}>
+                        {link.originalUrl || "—"}
+                        <button
+                          onClick={() => handleCopy(link.originalUrl)}
+                          style={{ backgroundColor: "white", cursor: 'pointer', position: 'absolute', top: '20px', right: '0' }}
+                        >
+                          <img src={copy} alt="copy" style={{ height: '30px', width: '30px' }} />
+                        </button>
+                      </td>
+                  
+                      <td style={{ position: 'relative' }}>
+                        {link.shortCode ? (
+                          <>
+                            <a
+                              href={`${BACKEND_URL}${link.shortCode}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ textDecoration: 'none', color: 'inherit' }}
+                            >
+                              {BACKEND_URL}{link.shortCode}
+                            </a>
+                        
+                            <button
+                              onClick={() => handleCopy(`${BACKEND_URL}${link.shortCode}`)}
+                              style={{ backgroundColor: "white", cursor: 'pointer', position: 'absolute', top: '20px', right: '0' }}
+                            >
+                              <img src={copy} alt="copy" style={{ height: '30px', width: '30px' }} />
+                            </button>
+                          </>
+                        ) : "—"}
+                      </td>
+                      
+                      <td>{link.remark || "—"}</td>
+                      <td>{link.clicks || 0}</td>
+                      
+                      <td>
+                        <span className={`${style.statusCell} ${link.status === 'active' ? style.active : style.inactive}`}>
+                          {link.status || "unknown"}
+                        </span>
+                      </td>
+                      
+                      <td>
+                        <img src={edit} alt="edit" onClick={() => handleEditLink(link._id)} />
+                        <img src={del} alt="del" onClick={() => handleDelete(link._id)} />
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
         </table>
 
@@ -249,21 +274,22 @@ function Links({ links, refreshLinks }) {
 
               <label htmlFor="destinationUrl" >Destination Url <span style={{color: 'red'}}>*</span></label>
               <input 
-              type="url" 
-              name="destinationUrl" 
-              placeholder="https://web.whatsapp.com/"
-              value={formData.destinationUrl}
-              onChange={handleChange}
+                type="url" 
+                name="destinationUrl" 
+                placeholder="https://web.whatsapp.com/"
+                value={formData.destinationUrl}
+                onChange={handleChange}
+                autoFocus
               />
 
               <label htmlFor="remarks">Remarks<span style={{color: 'red'}}>*</span></label>
               <textarea 
-              name="remarks"
-              rows={5} 
-              placeholder="Add remarks"
-              value={formData.remarks}
-              onChange={handleChange}
-          />
+                name="remarks"
+                rows={5} 
+                placeholder="Add remarks"
+                value={formData.remarks}
+                onChange={handleChange}
+              />
 
               <div className={style.expirationBox}>
                 <label htmlFor="expiration">Link Expiration </label>

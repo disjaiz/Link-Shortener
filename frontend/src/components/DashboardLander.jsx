@@ -63,16 +63,18 @@ const DashboardLander = () => {
   
     const now = new Date();
 
-    const updatedLinks = linksData.map(link => {
-      if (
-        link.expirationDate &&
-        link.status === 'active' &&
-        new Date(link.expirationDate) < now
-        ) {
-        return { ...link, status: 'inactive' };
-       }
-        return link;
-    });
+    const updatedLinks = Array.isArray(linksData)
+     ? linksData.map(link => {
+         if (
+           link.expirationDate &&
+           link.status === 'active' &&
+           new Date(link.expirationDate) < now
+         ) {
+           return { ...link, status: 'inactive' };
+         }
+         return link;
+       })
+     : [];
 
     setLinks(updatedLinks);
     localStorage.setItem('links', JSON.stringify(updatedLinks));
