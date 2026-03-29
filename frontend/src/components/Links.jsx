@@ -178,7 +178,8 @@ function Links({ links, refreshLinks }) {
                       const parsedTime = parse(link.timeCreated, 'hh:mm a', new Date());
                       formattedDate = `${format(new Date(link.dateCreated), 'MMM dd, yyyy')} ${format(parsedTime, 'HH:mm')}`;
                     }
-                  } catch (e) {
+                  // eslint-disable-next-line no-unused-vars
+                  } catch (error) {
                     formattedDate = "—";
                   }
                 
