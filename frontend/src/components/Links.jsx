@@ -46,7 +46,7 @@ function Links({ links, refreshLinks }) {
       console.log('Copied to clipboard!');
   };
 
-  const handleEditLink =async (id) => {
+  const handleEdit =async (id) => {
     setSelectedLinkId(id);
       try {
         const response =await fetch(`${BACKEND_URL}links/${id}`, {
@@ -105,7 +105,7 @@ function Links({ links, refreshLinks }) {
     setFormData({ destinationUrl: "", remarks: "", expiration: "" });
   };
 
-  const handleUpdate = async (e) => {
+  const handleUpdateLink = async (e) => {
     e.preventDefault();
     
     const linkData = {
@@ -229,7 +229,7 @@ function Links({ links, refreshLinks }) {
                       </td>
                       
                       <td>
-                        <img src={edit} alt="edit" onClick={() => handleEditLink(link._id)} />
+                        <img src={edit} alt="edit" onClick={() => handleEdit(link._id)} />
                         <img src={del} alt="del" onClick={() => handleDelete(link._id)} />
                       </td>
                     </tr>
@@ -271,7 +271,7 @@ function Links({ links, refreshLinks }) {
           <div className={style.editmodalContent}>
             <p className={style.mHeading}>New Link</p>
             <img onClick={()=> setIsEditModalOpen(false)} src={close} className={style.closeimg}/>
-            <form  ref={formRef}  onSubmit={handleUpdate}  className={style.form}>
+            <form  ref={formRef}  onSubmit={handleUpdateLink}  className={style.form}>
 
               <label htmlFor="destinationUrl" >Destination Url <span style={{color: 'red'}}>*</span></label>
               <input 

@@ -54,27 +54,29 @@ const DashboardLander = () => {
       method: "GET",
     });
 
-     if (res.status === 401) {
-      navigate('/');
-     }
+    if (res.status === 401) navigate('/');
 
     const linksData = await res.json();
   
-  
-    const now = new Date();
+  const now = Date.now();
 
-    const updatedLinks = Array.isArray(linksData)
-     ? linksData.map(link => {
-         if (
-           link.expirationDate &&
-           link.status === 'active' &&
-           new Date(link.expirationDate) < now
-         ) {
-           return { ...link, status: 'inactive' };
-         }
-         return link;
-       })
-     : [];
+const updatedLinks = Array.isArray(linksData)
+
+  ? linksData.map(link => {
+      const exp = link.expirationDate
+        ? new Date(link.expirationDate).getTime()
+        : null;
+
+      if (
+        exp &&
+        link.status === "active" &&
+        exp < now
+      ) {
+        return { ...link, status: "inactive" };
+      }
+      return link;
+    })
+  : [];
 
     setLinks(updatedLinks);
     localStorage.setItem('links', JSON.stringify(updatedLinks));
