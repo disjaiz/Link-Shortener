@@ -49,7 +49,7 @@ function Links({ links, refreshLinks }) {
   const handleEditLink =async (id) => {
     setSelectedLinkId(id);
       try {
-        const response =await fetch(`http://localhost:3000/links/${id}`, {
+        const response =await fetch(`${BACKEND_URL}links/${id}`, {
           method: 'GET',
           credentials: 'include', 
       });
