@@ -67,6 +67,15 @@ const updatedLinks = Array.isArray(linksData)
         ? new Date(link.expirationDate).getTime()
         : null;
 
+         // 🔥 DEBUG HERE
+        console.log("LINK DEBUG:", {
+          raw: link.expirationDate,
+          parsed: new Date(link.expirationDate),
+          timestamp: exp,
+          now: now,
+          status: link.status
+        });
+
       if (
         exp &&
         link.status === "active" &&
