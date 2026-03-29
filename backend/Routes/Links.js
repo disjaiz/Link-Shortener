@@ -137,38 +137,6 @@ router.get('/:linkId', Authenticate,  async (req, res) => {
 
 
 // ==================Update link route===============================
-// router.put('/:linkId', Authenticate, async (req, res) => {
-//     console.log('INTO-----------')
-//   const { linkId } = req.params;
-//   const userId = req.user.id;
-//   const { destinationUrl, remarks, expirationDate } = req.body;
-
-//   try {
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).json({ msg: 'User not found' });
-//     }
-
-//     const link = user.links.id(linkId); // Find the link by its id
-//     if (!link) {
-//       return res.status(404).json({ msg: 'Link not found' });
-//     }
-
-//     // Update the link fields
-//     link.originalUrl = destinationUrl || link.originalUrl;
-//     link.remark = remarks || link.remark;
-//     link.expirationDate = expirationDate || link.expirationDate;
-
-//     await user.save(); // Save the updated user document
-
-//     res.status(200).json({ msg: 'Link updated successfully', link });
-//   } catch (error) {
-//     console.error('Error updating link:', error);
-//     res.status(500).json({ msg: 'Error updating link', error });
-//   }
-// });
-
-
 router.put('/:linkId', Authenticate, async (req, res) => {
     try {
         const { destinationUrl, remarks, expiration } = req.body;
@@ -217,5 +185,36 @@ router.put('/:linkId', Authenticate, async (req, res) => {
     }
 });
 
+
+// router.put('/:linkId', Authenticate, async (req, res) => {
+//     console.log('INTO-----------')
+//   const { linkId } = req.params;
+//   const userId = req.user.id;
+//   const { destinationUrl, remarks, expirationDate } = req.body;
+
+//   try {
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ msg: 'User not found' });
+//     }
+
+//     const link = user.links.id(linkId); // Find the link by its id
+//     if (!link) {
+//       return res.status(404).json({ msg: 'Link not found' });
+//     }
+
+//     // Update the link fields
+//     link.originalUrl = destinationUrl || link.originalUrl;
+//     link.remark = remarks || link.remark;
+//     link.expirationDate = expirationDate || link.expirationDate;
+
+//     await user.save(); // Save the updated user document
+
+//     res.status(200).json({ msg: 'Link updated successfully', link });
+//   } catch (error) {
+//     console.error('Error updating link:', error);
+//     res.status(500).json({ msg: 'Error updating link', error });
+//   }
+// });
 
 export default router;

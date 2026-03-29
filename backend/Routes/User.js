@@ -61,22 +61,13 @@ router.post('/signup', async (req, res) => {
                 secure: isProd,
                 sameSite: isProd ? "none" : "lax",
             });
-        
-        // res.cookie('token', token, {
-        //     httpOnly: true,
-        //     maxAge: 5 * 60 * 60 * 1000,
-        //     sameSite: 'None',
-        //     secure: true,
-        //     domain: '.onrender.com',
-        //     path: '/',
-        // });
+
         return res.status(200).json({ msg: "User registered and logged in!", user });
     } catch (error) {
         console.error("Error during signup:", error);
         return res.status(500).json({ msg: "Server error during signup." });
     }
 });
-
 
 // ======================================login===============================================================
 router.post('/login', async (req, res)=>{
@@ -105,18 +96,6 @@ router.post('/login', async (req, res)=>{
                 secure: isProd,
                 sameSite: isProd ? "none" : "lax",
             });
-
-            // store token in cokkie
-            // res.cookie('Token', token, {
-            //     httpOnly: true, 
-            //     maxAge:5 * 60 * 60 * 1000,
-            //     // domain: '.onrender.com',
-            //     // path: '/',
-            //     // sameSite: 'None', 
-            //     // secure: true,
-            //     sameSite: 'Lax',
-            //     secure: false,
-            //   });
            
             return res.status(200).json({msg: "You are logged in!" ,existingUser});
         } 

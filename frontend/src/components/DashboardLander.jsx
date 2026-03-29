@@ -58,9 +58,9 @@ const DashboardLander = () => {
 
     const linksData = await res.json();
   
-  const now = Date.now();
+    const now = Date.now();
 
-const updatedLinks = Array.isArray(linksData)
+    const updatedLinks = Array.isArray(linksData)
 
   ? linksData.map(link => {
       const exp = link.expirationDate
@@ -73,11 +73,13 @@ const updatedLinks = Array.isArray(linksData)
           parsed: new Date(link.expirationDate),
           timestamp: exp,
           now: now,
-          status: link.status
+          status: link.status,
+          remark : link.remark
         });
 
+
       if (
-        exp &&
+        !isNaN(exp) &&
         link.status === "active" &&
         exp < now
       ) {
@@ -162,10 +164,17 @@ const updatedLinks = Array.isArray(linksData)
 
   const handleCreateLink = async (e) => {
     e.preventDefault();
-    
+
+    const convertToISTString = (localDateTime) => {
+      if (!localDateTime) return null;
+
+      // add IST offset manually
+      return localDateTime + ":00+05:30";
+    };
+
     const linkData = {
       ...formData,
-      expiration: expiration ? formData.expiration : null, // Set expiration only if toggler is on
+      expiration: expiration ? convertToISTString(formData.expiration) : null, // Set expiration only if toggler is on
     };
     console.log("Link Submitted:", linkData);
 
@@ -323,21 +332,21 @@ const updatedLinks = Array.isArray(linksData)
                    onChange={handleChange}
                    />
 
-                   <div className={style.expirationBox}>
-                <label htmlFor="expiration">Link Expiration </label>
+                  <div className={style.expirationBox}>
+                      <label htmlFor="expiration">Link Expiration </label>
 
-                <div className={style.toggler}>   
-                    <button 
-                    type="button" 
-                    className={style.switchStyle} 
-                    style={{backgroundColor: expiration? '#3b82f6' : '#e5e7eb'}} 
-                    onClick={() => setExpiration(!expiration)} 
-                     >
-               <div className={style.circleStyle} style={{ left: expiration ? '31px' : '5px'}} />
-               </button>
-          </div>
+                      <div className={style.toggler}>   
+                          <button 
+                             type="button" 
+                             className={style.switchStyle} 
+                             style={{backgroundColor: expiration? '#3b82f6' : '#e5e7eb'}} 
+                             onClick={() => setExpiration(!expiration)} 
+                              >
+                             <div className={style.circleStyle} style={{ left: expiration ? '31px' : '5px'}} />
+                          </button>
+                      </div>
 
-                   </div>
+                  </div>
 
                    <input 
                    type="datetime-local" 
