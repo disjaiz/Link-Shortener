@@ -4,9 +4,8 @@ import { format} from 'date-fns';
 import no_data_img from '../images/no_data.png';
 import PropTypes from 'prop-types';
 
-// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const isProd = import.meta.env.MODE === "production";
-const BACKEND_URL= isProd ? 'https://link-shortener-backend-xf73.onrender.com/' : "http://localhost:3000/";
+const BACKEND_URL = isProd ? import.meta.env.VITE_BACKEND_URL : import.meta.env.VITE_DEVELOPMENT_BACKEND_URL;
 
 function Analytics({ links }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,7 +49,7 @@ function Analytics({ links }) {
            <img src={no_data_img} className={style.bgNoDataImg} alt="No Data" />
         )}
 
-
+        <div className={style.tableWrapper}>
           <table className={style.table}>
               <thead>
                   <tr>
@@ -80,6 +79,7 @@ function Analytics({ links }) {
                 ))}
               </tbody>
           </table>
+        </div>
 
           {/* Pagination Controls */}
         <div  className={style.paginationContainer}>

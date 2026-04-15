@@ -1,7 +1,5 @@
-// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
-
 const isProd = import.meta.env.MODE === "production";
-const BACKEND_URL= isProd ? 'https://link-shortener-backend-xf73.onrender.com/' : "http://localhost:3000/";
+const BACKEND_URL = isProd ? import.meta.env.VITE_BACKEND_URL : import.meta.env.VITE_DEVELOPMENT_BACKEND_URL;
 
 //=============================== signup fetch ======================================
 async function signup(formdata){

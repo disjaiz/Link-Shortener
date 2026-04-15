@@ -13,19 +13,18 @@ import linksIcon from '../images/links.png'
 import linksIcon_grey from '../images/links_grey.png'
 import analytics_grey from '../images/analytics_grey.png'
 import analytics from '../images/analytics.png'
-import plus from '../images/plus.png'
+// import plus from '../images/plus.png'
+import plusImg from '../images/plusImg.png'
 import close from '../images/close.png'
 import style from './DashboardLander.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faSun, faCloudSun, faCloudMoon, faMoon } from '@fortawesome/free-solid-svg-icons';
+import {faSun, faCloudSun, faCloudMoon, faMoon, faBars } from '@fortawesome/free-solid-svg-icons';
 import {createLink} from '../FetchMaker';
 import UserContext from "./UserContext";
 
 
-// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
 const isProd = import.meta.env.MODE === "production";
-const BACKEND_URL= isProd ? 'https://link-shortener-backend-xf73.onrender.com/' : "http://localhost:3000/";
-
+const BACKEND_URL = isProd ? import.meta.env.VITE_BACKEND_URL : import.meta.env.VITE_DEVELOPMENT_BACKEND_URL;
 
 const DashboardLander = () => {
   const {user} = useContext(UserContext);
@@ -41,6 +40,7 @@ const DashboardLander = () => {
   const [year, setYear] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expiration, setExpiration] = useState(false);
+  const [openLeftPanel, setOpenLeftPanel] = useState(false);
 
   const username = user || "Guest";
   const shortUsername = username.slice(0, 2).toUpperCase();
@@ -60,26 +60,23 @@ const DashboardLander = () => {
   
     const now = Date.now();
 
-    const updatedLinks = Array.isArray(linksData)
-
-  ? linksData.map(link => {
+    const updatedLinks = Array.isArray(linksData)? linksData.map(link => {
       const exp = link.expirationDate
         ? new Date(link.expirationDate).getTime()
         : null;
 
          // 🔥 DEBUG HERE
-        console.log("LINK DEBUG:", {
-          raw: link.expirationDate,
-          parsed: new Date(link.expirationDate),
-          timestamp: exp,
-          now: now,
-          status: link.status,
-          remark : link.remark
-        });
-
+        // console.log("LINK DEBUG:", {
+        //   raw: link.expirationDate,
+        //   parsed: new Date(link.expirationDate),
+        //   timestamp: exp,
+        //   now: now,
+        //   status: link.status,
+        //   remark : link.remark
+        // });
 
       if (
-        !isNaN(exp) &&
+        exp !== null &&
         link.status === "active" &&
         exp < now
       ) {
@@ -222,7 +219,9 @@ const DashboardLander = () => {
 // ==================================================================================================================================
   return (
     <div className={style.container}>
-          <div className={style.leftpanel}>
+    
+          <div className={`${style.leftpanel} ${openLeftPanel ? style.openLeftPanel : ""}`}>
+            <button onClick={() => setOpenLeftPanel(false)} className={style.closeSidebarBtn} >✕</button>
               <img src={trimlyLogo} alt="trimly_logo" className={style.trimly_Logo}/>
 
               {/* Navigation Buttons */}
@@ -230,13 +229,12 @@ const DashboardLander = () => {
                   onClick={() => setActiveComponent("dashboard")}
                   className={style.toggleBtns}
                   style={{ backgroundColor: activeComponent === "dashboard" ? "#F3F7FD" : "white",
-                           color: activeComponent === "dashboard" ? '#1B48DA' : 'black'
-                   }}
-                  >
+                           color: activeComponent === "dashboard" ? '#1B48DA' : 'black'}}
+                >
                     <img 
                         src={activeComponent === "dashboard" ? dashboard : dashboard_grey} 
-                        style={{marginLeft: '17px', height: '20px' 
-                        }}/>
+                        style={{marginLeft: '17px', height: '20px'  }}
+                    />
                      Dashboard
                 </p>
 
@@ -276,21 +274,35 @@ const DashboardLander = () => {
                   alt="settings" style={{marginLeft: '17px', height: '20px'}}/>
                   Settings
                 </p>
+                {/* greeting div */}
+                <div className={`${style.greeting} ${style.mobileOnly} ${style.mobileOnlyGreetingStyle}`}>
+                <p className={style.username}> 
+                  <FontAwesomeIcon icon={greetingIcon} style={{color: iconColor}} /> {greeting}, {username}
+                </p>
+                <p className={style.date}>{day}, {month} {year}</p>
+                </div>
+                {/* logout div */}
+                <div className={style.logoutDivMobileOnly} onClick={handleLogout}>Logout</div>
           </div>
+
+          {openLeftPanel && <div className={style.overlay} onClick={() => setOpenLeftPanel(false)} />}
+
          
           {/* Render the selected component */}
           <div className={style.rightpanel}>
-
             <div className={style.navbar}>
-              <div className={style.greeting}>
-                <p style={{color: '#181820', fontSize: '1.1rem', fontWeight: '600'}}> 
+              <button onClick={() => setOpenLeftPanel(true)} className={style.menuBtn}>
+                <FontAwesomeIcon icon={faBars} />
+              </button>
+              <div className={`${style.greeting} ${style.desktopOnly}`}>
+                <p className={style.username}> 
                   <FontAwesomeIcon icon={greetingIcon} style={{color: iconColor}} /> {greeting}, {username}
                 </p>
-                <p style={{color: '#878BA9', fontSize: '0.8rem', marginLeft: '20px'}}>{day}, {month} {year}</p>
+                <p className={style.date}>{day}, {month} {year}</p>
               </div>
 
               <div className={style.rightSection}>
-                <button onClick={handleCreateNewLink}><img src={plus} /> Create new</button>
+                <button onClick={handleCreateNewLink}><img src={plusImg} className={style.btnImg} /> Create new</button>
                 <input type="text" placeholder="Search by remarks" className={style.inputwithicon} value={remarkInputText} onChange={(e) => setRemarkInputText(e.target.value)}/>
                 <p className={style.userName} onClick={handleLogout}>{shortUsername}</p>
                 <div className={style.logoutDiv}>Logout</div>
@@ -317,18 +329,18 @@ const DashboardLander = () => {
                    <label htmlFor="destinationUrl" >Destination Url <span style={{color: 'red'}}>*</span></label>
                    <input 
                    type="url" 
-              name="destinationUrl" 
-              placeholder="https://web.whatsapp.com/"
-              value={formData.destinationUrl}
+                   name="destinationUrl" 
+                   placeholder="https://web.whatsapp.com/"
+                   value={formData.destinationUrl}
                    onChange={handleChange}
                    />
 
                    <label htmlFor="remarks">Remarks<span style={{color: 'red'}}>*</span></label>
                    <textarea 
                    name="remarks"
-              rows={5} 
-              placeholder="Add remarks"
-              value={formData.remarks}
+                   rows={5} 
+                   placeholder="Add remarks"
+                   value={formData.remarks}
                    onChange={handleChange}
                    />
 

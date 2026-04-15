@@ -112,17 +112,20 @@ function Login() {
       </div>
 
       <div className={style.left_side}>
-            <button className={style.topRightBtns} style={{top: '1.5rem', right:'8rem'}} 
-             onClick={() => setIsSignup(true)}>SignUp</button>
+            <button 
+             className={`${style.topRightBtns} ${style.signupBtn}`}
+             onClick={() => setIsSignup(true)}
+             >SignUp</button>
 
-            <button className={style.topRightBtns} style={{top: '1.5rem', right:'2rem'}}  
-            onClick={() => setIsSignup(false)}>Login</button>
+            <button 
+            className={`${style.topRightBtns} ${style.loginBtn}`}
+            onClick={() => setIsSignup(false)}
+            >Login</button>
 
         {isSignup ? (
             <>
             {/* Signup Form */}
             <p className={style.heading}>Join us Today!</p>
-
             <form className={style.form_container} onSubmit={handleSignup}>        
                   <input
                     type="text"
@@ -184,14 +187,15 @@ function Login() {
            
             <>
             {/* Login Form */}
-             <p className={style.heading} style={{marginBottom: '5rem'}}>Login</p>
-             <form className={style.form_container} onSubmit={handleLogin}>
+             <p className={style.heading} style={{marginTop: '5rem'}}>Login</p>
+             <form className={style.form_container} onSubmit={handleLogin} autoComplete='on'>
 
                   <input
                     type="email"
                     placeholder="Email Id"
                     className={style.input}
                     name="email"
+                    autoComplete="email"
                     value={loginData.email}
                     onChange={handleLoginChange}
                   />
@@ -208,7 +212,7 @@ function Login() {
                     <img className={style.eyeIcon} onClick={() => setShowPassword(!showPassword)} src={showPassword ? closedEye : openEye }  />
                   </div>
 
-                  <button className={style.registerBtn}>Register</button>
+                  <button className={style.registerBtn}>Login</button>
 
                   <p style={{fontSize: '0.9rem', color: '#3B3C51', fontWeight: '600px'}}>
                      Already have an account? &nbsp;

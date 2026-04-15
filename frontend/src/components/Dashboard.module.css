@@ -6,6 +6,7 @@
 .container{
     width: 100%;
     padding: 2rem 4rem;
+    border-left: 1px solid rgb(244, 239, 239);
 }
 #clicksCount{
     font-weight: 600;
@@ -28,6 +29,49 @@
     font-weight: 600;
     font-style: bold;
     font-size: 1.2rem;
-    margin-bottom: 2rem;
-    
+    margin-bottom: 2rem;  
+}
+
+/* Tablet and small laptops */
+@media (min-width: 769px ) and ( max-width: 1024px) { 
+    .container{
+        padding: 2rem 5rem;
+    }
+    .barChartContainer{
+        grid-template-columns:1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 1rem;
+        height: auto;
+    }
+    .barDiv{
+        padding: 1rem;
+    }
+    .barHeading{
+        font-size: 1rem;
+        margin-bottom: 1rem;  
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .container{
+        padding: 1.5rem;
+    }
+    #clicksCount{
+        font-size: 1.3rem;
+    }
+    .barChartContainer{
+        grid-template-columns:1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 1rem;
+        height: auto;
+    }
+    .barDiv{
+        padding: 1rem;
+    }
+    .barHeading{
+        font-size: 1rem;
+        margin-bottom: 1rem;  
+    }
+   
 }

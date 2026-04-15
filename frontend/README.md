@@ -11,4 +11,10 @@ Currently, two official plugins are available:
 
 
 
+New account -
+
+name - Siddhi
+email - siddhi@gmail.com
+mob - 1111111111
+
 passoword always - 1

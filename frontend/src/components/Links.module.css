@@ -6,16 +6,18 @@
   height: 100%;
   width: 100%;
   position: relative;
-  /* flex: 1; */
   overflow: hidden;
-
-
   position: relative;
   min-height: 300px;  /* so the image has space */
 }
 
+ .tableWrapper{
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  }
+  
 .table {
-    /* flex: 1; */
+  min-width: 1024px; /* prevents squishing */
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
@@ -38,8 +40,8 @@
   color: #3B3C51;
   border-bottom: 1px solid #eee;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
+  text-overflow: unset;
   text-align: center;
 }
 
@@ -52,9 +54,10 @@
   color: #3B3C51;
   font-weight: 500;
   border-right: 1px solid #f3efef;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;  
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
+  text-overflow: unset;
   text-align: center;
 }
 .table tr:last-child td {
@@ -141,7 +144,7 @@
   left: 50%;
   transform: translateX(-50%);
   gap: 4px;
-  z-index: 1000;
+  z-index: 100;
 }
 
 .arrowBtn {
@@ -233,8 +236,6 @@
   top: 15px;
   right: 15px;
 }
-
-
 
 .editmodalContent {
   position: fixed;
@@ -343,4 +344,106 @@
   width: 300px;          /* control size */
   opacity: 0.4;          /* optional */
   pointer-events: none;  /* prevents blocking clicks */
+}
+
+/* Tablet and small laptops */
+@media (max-width: 1024px) {
+   .tableWrapper{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    width: 100%;
+    min-width: 1024px;
+    border-collapse: collapse;
+  }
+  .table th:nth-child(1) {
+    width: 20%;
+  }
+  
+  .table th:nth-child(2) {
+    width: 25%;
+  }
+  
+  .table th:nth-child(3) {
+    width:25%;
+  }
+  
+  .table th:nth-child(4) {
+    width: 20%;
+  }
+  .table th:nth-child(5) {
+    width: 18%;
+  }
+   .table th:nth-child(6) {
+    width: 18%;
+  }
+  
+  .table th:nth-child(7) {
+    width: 20%; 
+  } 
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+  .tableWrapper{
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  }
+
+.table {
+  width: 100%;
+  min-width: 768px; 
+  border-collapse: collapse;
+  }
+  .table th:nth-child(1) {
+    width: 20%;
+  }
+  
+  .table th:nth-child(2) {
+    width: 25%;
+  }
+  
+  .table th:nth-child(3) {
+    width:25%;
+  }
+  
+  .table th:nth-child(4) {
+    width: 20%;
+  }
+  .table th:nth-child(5) {
+    width: 18%;
+  }
+   .table th:nth-child(6) {
+    width: 18%;
+  }
+  
+  .table th:nth-child(7) {
+    width: 20%; 
+  } 
+  .modalContent {
+    padding: 10px 20px;
+    width: 95%;
+  }
+  .modalButtons {
+    width: 80%;
+  }
+  .editmodalContent {
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50% , -50%); 
+    width: 90%; 
+    height: 80%;  
+    border-radius: 0.5rem;
+  }
+  .mHeading{
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+  .bottom{
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
 }

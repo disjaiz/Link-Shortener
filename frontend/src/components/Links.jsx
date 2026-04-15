@@ -10,10 +10,8 @@ import { deleteLink } from '../FetchMaker';
 import no_data_img from '../images/no_data.png';
 import PropTypes from 'prop-types';
 
-
-// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ;
 const isProd = import.meta.env.MODE === "production";
-const BACKEND_URL= isProd ? 'https://link-shortener-backend-xf73.onrender.com/' : "http://localhost:3000/";
+const BACKEND_URL = isProd ? import.meta.env.VITE_BACKEND_URL : import.meta.env.VITE_DEVELOPMENT_BACKEND_URL;
 
 function Links({ links, refreshLinks }) {
   const formRef = useRef(null); 
@@ -157,7 +155,8 @@ function Links({ links, refreshLinks }) {
            <img src={no_data_img} className={style.bgNoDataImg} alt="No Data" />
         )}
 
-        <table className={style.table}>
+        <div className={style.tableWrapper}>
+          <table className={style.table}>
             <thead>
                 <tr>
                     <th>Date</th>
@@ -191,8 +190,7 @@ function Links({ links, refreshLinks }) {
                         {link.originalUrl || "—"}
                         <button
                           onClick={() => handleCopy(link.originalUrl)}
-                          style={{ backgroundColor: "white", cursor: 'pointer', position: 'absolute', top: '20px', right: '0' }}
-                        >
+                          style={{ backgroundColor: "white", cursor: 'pointer', position: 'absolute', bottom: '0', right: '0', padding:"0" }} >
                           <img src={copy} alt="copy" style={{ height: '30px', width: '30px' }} />
                         </button>
                       </td>
@@ -211,8 +209,8 @@ function Links({ links, refreshLinks }) {
                         
                             <button
                               onClick={() => handleCopy(`${BACKEND_URL}${link.shortCode}`)}
-                              style={{ backgroundColor: "white", cursor: 'pointer', position: 'absolute', top: '20px', right: '0' }}
-                            >
+                              style={{ backgroundColor: "white", cursor: 'pointer', position: 'absolute', bottom: '0px', right: '0', padding:"0" }} >
+
                               <img src={copy} alt="copy" style={{ height: '30px', width: '30px' }} />
                             </button>
                           </>
@@ -236,7 +234,8 @@ function Links({ links, refreshLinks }) {
                   );
                 })}
             </tbody>
-        </table>
+          </table>
+        </div>
 
         {/* Pagination Controls */}
         <div  className={style.paginationContainer}>

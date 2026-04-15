@@ -24,8 +24,8 @@ app.use(urlencoded({ extended: true }));
 
 const isProd = process.env.NODE_ENV === "production";
 app.use(cors({
-  origin: isProd ?'https://link-shortener-frontend-i663.onrender.com' : 'http://localhost:5173',
-  credentials: true, 
+  origin: isProd ?'https://link-shortener-frontend-i663.onrender.com' :  process.env.LOCAL_FRONTEND_URL,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
@@ -87,6 +87,7 @@ app.get('/:code', async (req, res) => {
 // ======================================== Starting the server ============================================================//
 app.listen(port, ()=>{
     console.log("-------Listening on port,", port, "------------");    
+    
 })
 
 app.get('/', (req, res)=>{

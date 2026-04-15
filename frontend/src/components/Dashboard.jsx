@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 import style from './Dashboard.module.css'
-import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList} from "recharts";
 
 function Dashboard({ links }) {
     const safeLinks = Array.isArray(links) ? links : [];
@@ -58,7 +56,7 @@ function Dashboard({ links }) {
                 <BarChart
                   data={dateData}
                   layout="vertical"
-                  margin={{ top: 10, right: 60, left: 20, bottom: 10 }}
+                  margin={{ top: 10, right: 60, left: 0, bottom: 10 }}
                 >
                 
                   <XAxis type="number" hide domain={[0, "dataMax + 2"]} />
@@ -66,9 +64,9 @@ function Dashboard({ links }) {
                   <YAxis
                     type="category"
                     dataKey="name"
-                    axisLine={false}
+                    axisLine={true}
                     tickLine={false}
-                    width={120}
+                    width={100}
                   />
               
                   <Tooltip />
@@ -87,14 +85,15 @@ function Dashboard({ links }) {
               <BarChart 
               data={deviceData} 
               layout="vertical"
-               margin={{ top: 10, right: 60, left: 20, bottom: 10 }} >
+               margin={{ top: 10, right: 60, left: 20, bottom: 10 }} 
+               >
               
                 <XAxis type="number" hide />
 
                 <YAxis
                   type="category"
                   dataKey="name"
-                  axisLine={false}
+                  axisLine={true}
                   tickLine={false}
                 />
 

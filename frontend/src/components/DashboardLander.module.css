@@ -7,14 +7,22 @@
     width: 100vw;
     position: relative;
     font-family: Manrope , sans-serif !important;
+    /* min-width: 0;  */
+}
+.closeSidebarBtn{
+    display: none;
 }
 .leftpanel {
+    /* position: static; */
     width: 20%;
     height: 100%;
     padding: 1.4rem 1rem; 
     display: flex;
     flex-direction: column;
     overflow-y: auto; 
+}
+.menuBtn{
+    display: none;
 }
 .divider {
   margin: 30px -15px 0 -15px; 
@@ -66,9 +74,43 @@
     display: flex;
     flex-direction: column;
 }
-.greeting p{
+.desktopOnly { display: flex; }
+.mobileOnly { display: none; }
+.mobileOnlyGreetingStyle{ 
+    min-width: 200px;
+    position: absolute;
+    left: 5%;
+    bottom: 15%;
+    background-color: aliceblue;
+    border-radius: 0.5rem;
+    padding: 1rem 0.5rem;
+    background: linear-gradient(135deg, #f0f8ff, #e6f0ff);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(6px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.mobileOnlyGreetingStyle:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.logoutDivMobileOnly{
+    display: none;
+}
+
+.greeting .username{
+    color: #181820;
+    font-size: 1.1rem;
+    font-weight: 600;
+     margin: 0;
+}
+.greeting .date{
+    color: #878BA9;
+    font-size: 0.8rem;
+    margin-left: 20px ;
     margin: 0;
 }
+
 .rightSection {
     display: flex;
     justify-content: flex-end;
@@ -76,7 +118,10 @@
     gap: 10px; 
     width: 75%;
 }
-.navbar button {
+.rightSection button .btnImg{
+    width: 20px;
+}
+.rightSection button {
     padding: 0.5rem 0.7rem;
     background-color: #1B48DA;
     color: white;
@@ -240,3 +285,175 @@
     justify-content: space-between;
 }
 
+/* Tablet and small laptops */
+@media (min-width: 769px ) and ( max-width: 1024px) { 
+    .leftpanel {
+        display: none;
+        position: relative;
+    }
+    .rightpanel{
+        width: 100%;
+    }
+    .menuBtn {
+        margin: 0 1rem 0 2rem;
+        display: block;
+        width: 30px;
+        height: 30px;
+        border: none;
+        background: transparent;
+    }
+    .menuBtn svg {
+        width: 20px;
+        height: 20px;
+    }
+    .openLeftPanel {
+        /* background-color: tomato; */
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 70%;
+        background-color: white;
+        z-index: 1000; /* higher than right panel */
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4); /* dim effect */
+      z-index: 999; /* below menu, above content */
+    }
+    .closeSidebarBtn{
+        border: none;
+        background-color: transparent;
+        display: block;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+    .desktopOnly { display: none; }
+    .mobileOnly { display: block; }
+
+    .logoutDivMobileOnly{
+        display: block;
+        position: absolute;
+        left: 5%;
+        bottom: 7%;
+        background-color: whitesmoke;
+        font-size: 1.1rem;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0.3rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);   
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4); /* dim effect */
+      z-index: 999; /* below menu, above content */
+    }
+    .menuBtn {
+        display: block;
+        width: 30px;
+        height: 30px;
+        border: none;
+        background: transparent;
+    }
+    .menuBtn svg {
+        width: 20px;
+        height: 20px;
+     }
+    .leftpanel {
+        display: none;
+        position: relative;
+    }
+    .openLeftPanel {
+        /* background-color: tomato; */
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 70%;
+        background-color: white;
+        z-index: 1000; /* higher than right panel */
+    }
+    .closeSidebarBtn{
+        border: none;
+        background-color: transparent;
+        display: block;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+    .rightpanel{
+        width: 100%;
+    }
+   .navbar {
+        justify-content: space-around;
+        width: 100%;
+    }   
+    .greeting {
+        display: none;
+    }
+    .rightSection {
+        justify-content: flex-end;
+        gap: 0.5rem; 
+        width: 85%;
+    }
+    .rightSection button .btnImg{
+        width: 15px;
+    }
+    .rightSection button {
+         padding: 0.7rem 0.7rem;
+         font-size: 0.8rem;
+         margin-right: 0rem;
+    }
+    .inputwithicon {
+        width: 180px;
+        margin-right: 0rem;
+    }
+    .userName{
+        margin-right: 0rem;
+        display: none;
+    }
+    .modalContent {
+        top: 50%;
+        left: 50%; 
+        transform: translate(-50%, -50%);
+        width: 95%; 
+        height: 85%;  
+        border-radius: 0.5rem;
+    }
+    .mHeading{
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+    }
+   .bottom{
+        border-bottom-left-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+    }
+    .desktopOnly { display: none; }
+    .mobileOnly { display: block; }
+
+    .logoutDivMobileOnly{
+        display: block;
+        position: absolute;
+        left: 5%;
+        bottom: 7%;
+        background-color: whitesmoke;
+        font-size: 1.1rem;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0.3rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);   
+    }
+}

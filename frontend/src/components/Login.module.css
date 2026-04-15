@@ -38,8 +38,17 @@
     background-color: transparent;
     transition: background-color 0.3s ease;
     font-family: inherit;
+    top: 1.5rem; /* common */
+
 }
-  
+.signupBtn {
+    right: 8rem;
+}
+
+.loginBtn {
+    right: 2rem;
+}
+
 .topRightBtns:hover {
     background-color: #1B48DA !important;
     color: white;
@@ -51,16 +60,13 @@
     display: flex;
     font-family: inherit;
     flex-direction: column;
-    /* align-items: center; */
     padding: 7rem 8rem 0 8rem;
 }
 .form_container{
-    /* background-color: rgb(223, 188, 181); */
     display: flex;
     flex-direction: column;
-        align-items: center;  
-         justify-content: center; 
-    /*padding-left: 4rem; */
+    align-items: center;  
+    justify-content: center; 
     width: 80%;
 }
 .heading{
@@ -80,7 +86,6 @@
 .inputWrapper {
   position: relative;
   width: 92%;
-  background-color: turquoise;
 }
 .passwordInputContainer {
   width: 100%;
@@ -132,6 +137,51 @@
   }
 
 
+/* Tablet and small laptops */
+@media (max-width: 1024px) { 
+    .form_container{
+        max-width: 400px;    
+        width: 100%;
+    }   
+    .trimly_logo{
+    width: 180px;
+}
+}
 
+/* Mobile */
+@media (max-width: 768px) {
+    .right_side{
+        display: none;
+    }
+    .left_side{
+        padding: 7rem 3rem 0 3rem;
+    }
+    .form_container{
+        width: 100%;
+        max-width: 400px;     /* prevents it from getting too wide */
+        margin: 0 auto;       /* centers the form */
+    }
+    .heading{
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0 auto 1.5rem auto; /* centers the heading */
+    }
+    .trimly_logo{
+        width: 120px;
+    }
+    .topRightBtns{
+        padding: 0.4rem 0.5rem;
+        font-size: 0.7rem;
+        top: 1.8rem;
+    }
+    .signupBtn {
+        right: 5rem;
+    }
+
+    .loginBtn {
+        right: 1rem;
+    }
+
+}
 
 

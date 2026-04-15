@@ -7,7 +7,7 @@ import {nanoid} from 'nanoid';
 
 // Project's backend base URL (update this when deployed)
 const isProd = process.env.NODE_ENV === "production";
-const BASE_BACKEND_URL = isProd ? 'https://link-shortener-backend-xf73.onrender.com/' : 'http://localhost:3000/';
+const BASE_BACKEND_URL = isProd ? 'https://link-shortener-backend-xf73.onrender.com/' :  `${process.env.LOCAL_DEV_BACKEND_URL}`;
 
 router.post('/create-link', Authenticate, async (req, res) => {
 
@@ -68,19 +68,38 @@ router.post('/create-link', Authenticate, async (req, res) => {
 
 //===========get all links for authenticated user=====================
 router.get('/all-links', Authenticate, async (req, res) => {
-    try {
-        const userId = req.user.id;
-       
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ msg: 'User not found.' });
-        }
-
-        res.status(200).json(user.links);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: 'Internal server error.' });
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found.' });
     }
+
+    const now = Date.now();
+    let updated = false;
+    const updatedLinks = user.links.map(link => {
+      if (
+        link.expirationDate &&
+        link.status === "active" &&
+        new Date(link.expirationDate).getTime() < now
+      ) {
+        updated = true;
+        return { ...link._doc, status: "inactive" }; // .doc to get the raw object from Mongoose document not the full Mongoose document 
+      }
+      return link;
+    });
+
+    if (updated) {
+      user.links = updatedLinks;
+      await user.save();
+    }
+
+    res.status(200).json(updatedLinks);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Internal server error.' });
+  }
 });
 
 //===================delete link=======================
